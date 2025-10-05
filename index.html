@@ -4,22 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDX Prompt - AI Art & Idea Generator</title>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         /* --- Basic Setup & Variables --- */
         :root {
-            --bg-dark: #10101d;
+            --bg-dark: #0d0d1a; /* Darker background */
             --bg-card: #161625;
-            --primary-color: #6a11cb;
-            --accent-color: #f72585;
+            --primary-color: #8A2BE2; /* BlueViolet */
+            --accent-color: #FF1493; /* DeepPink */
             --text-light: #f0f2f5;
             --text-secondary: #a9a9b3;
         }
@@ -39,6 +39,7 @@
             background-color: var(--bg-dark);
             color: var(--text-light);
             line-height: 1.7;
+            overflow-x: hidden;
         }
 
         .container {
@@ -47,19 +48,33 @@
             padding: 0 20px;
         }
 
+        /* --- Animations & Reveal on Scroll --- */
+        .reveal {
+            position: relative;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: 1s all ease;
+        }
+        .reveal.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
         /* --- Reusable Components --- */
         .section-title {
             font-size: 2.5rem;
             font-weight: 700;
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
             padding: 12px 28px;
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             color: #fff;
@@ -70,24 +85,41 @@
         }
 
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 20, 147, 0.3);
         }
 
         /* --- Header --- */
         .header {
-            background-color: rgba(16, 16, 29, 0.8);
+            background-color: rgba(13, 13, 26, 0.7);
             backdrop-filter: blur(10px);
             padding: 15px 0;
             position: fixed;
             width: 100%;
             z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-        
+
         .navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-light);
         }
 
         .logo {
@@ -102,15 +134,39 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* --- Hero Section --- */
+        /* --- Hero Section with Aurora Effect --- */
         .hero {
             padding-top: 150px;
-            padding-bottom: 100px;
+            padding-bottom: 120px;
             text-align: center;
-            background: var(--bg-dark) url('https://www.transparenttextures.com/patterns/cubes.png'); /* Subtle background pattern */
+            position: relative;
+            overflow: hidden;
         }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 800px;
+            height: 800px;
+            background-image: radial-gradient(circle, var(--primary-color), transparent 50%), radial-gradient(circle, var(--accent-color), transparent 50%);
+            background-position: -200px -200px, 200px 200px;
+            background-repeat: no-repeat;
+            transform: translate(-50%, -50%);
+            filter: blur(150px);
+            opacity: 0.2;
+            animation: moveAurora 20s infinite linear;
+            z-index: -1;
+        }
+
+        @keyframes moveAurora {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
         .hero h1 {
-            font-size: 3.5rem;
+            font-size: 3.8rem;
             margin-bottom: 20px;
             line-height: 1.2;
         }
@@ -118,12 +174,17 @@
             font-size: 1.2rem;
             color: var(--text-secondary);
             max-width: 600px;
-            margin: 0 auto 30px;
+            margin: 0 auto 40px;
+        }
+        .app-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
         }
 
         /* --- Features Section --- */
-        .features {
-            padding: 80px 0;
+        #features {
+            padding: 100px 0;
             background-color: var(--bg-card);
         }
         .features-grid {
@@ -137,10 +198,11 @@
             border-radius: 16px;
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .feature-card:hover {
             transform: translateY(-10px);
+            box-shadow: 0 0 30px rgba(138, 43, 226, 0.4); /* Glow effect */
         }
         .feature-card .icon {
             font-size: 3rem;
@@ -150,32 +212,80 @@
         .feature-card h3 {
             font-size: 1.5rem;
             margin-bottom: 10px;
-            color: var(--text-light);
         }
         .feature-card p {
             color: var(--text-secondary);
         }
 
-        /* --- Showcase/Screenshots Section --- */
-        .showcase {
-            padding: 80px 0;
+        /* --- How It Works Section --- */
+        .how-it-works {
+            padding: 100px 0;
+        }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            counter-reset: step-counter;
+        }
+        .step-card {
+            position: relative;
+            padding: 30px;
+            padding-left: 50px;
+        }
+        .step-card::before {
+            counter-increment: step-counter;
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 30px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            width: 35px;
+            height: 35px;
+            line-height: 35px;
+            text-align: center;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+        }
+        .step-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+        .step-card p {
+            color: var(--text-secondary);
+        }
+
+        /* --- Showcase Section --- */
+        #showcase {
+            padding: 100px 0;
         }
         .showcase-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            /* === बदलाव 1: कार्ड को छोटा किया गया === */
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 30px; /* थोड़ा गैप बढ़ाया */
+            /* === बदलाव 2: अलग-अलग हाइट की इमेज को सही से दिखाने के लिए === */
+            align-items: start; 
         }
         .showcase-grid img {
             width: 100%;
-            border-radius: 12px;
+            height: auto; /* === बदलाव 3: इमेज अपनी असली हाइट लेगी === */
+            max-height: 480px; /* === बदलाव 4: बहुत लंबी इमेज से बचाने के लिए === */
+            border-radius: 16px;
             border: 2px solid rgba(255, 255, 255, 0.1);
-            aspect-ratio: 9 / 19; /* Maintain phone screenshot aspect ratio */
-            object-fit: cover;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            /* aspect-ratio और object-fit हटा दिया गया है */
         }
-        
+
+        .showcase-grid img:hover {
+            transform: scale(1.05) rotate(1deg);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+        }
+
         /* --- Footer Section --- */
         .footer {
-            padding: 40px 0;
+            padding: 50px 0;
             background-color: var(--bg-card);
             text-align: center;
         }
@@ -190,12 +300,10 @@
 
         /* --- Responsive Design --- */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-            .section-title {
-                font-size: 2rem;
-            }
+            .nav-links { display: none; }
+            .hero h1 { font-size: 2.8rem; }
+            .section-title { font-size: 2.2rem; }
+            .step-card::before { top: 25px; }
         }
     </style>
 </head>
@@ -204,6 +312,10 @@
     <header class="header">
         <div class="container navbar">
             <a href="#" class="logo">PDX <span>Prompt</span></a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#showcase">Showcase</a>
+            </div>
             <a href="mailto:pdxdigitalteam@gmail.com" class="btn">Contact Us</a>
         </div>
     </header>
@@ -212,28 +324,32 @@
         <!-- Hero Section -->
         <section class="hero">
             <div class="container">
-                <h1>Unleash Your Imagination with AI</h1>
-                <p>Your ultimate partner for creating stunning AI art and generating endless creative ideas, right at your fingertips.</p>
-                <a href="#" class="btn" onclick="alert('Coming soon to Indus Appstore!')">Download Now</a>
+                <h1 class="reveal">Unleash Your Imagination with AI</h1>
+                <p class="reveal">Your ultimate partner for creating stunning AI art and generating endless creative ideas, right at your fingertips.</p>
+                <div class="app-buttons reveal">
+                    <a href="https://play.google.com/store/apps/details?id=com.pdx.promptapp" class="btn" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-google-play"></i> Get it on Google Play
+                    </a>
+                </div>
             </div>
         </section>
 
         <!-- Features Section -->
-        <section class="features">
+        <section id="features">
             <div class="container">
-                <h2 class="section-title">Everything You Need To Create</h2>
+                <h2 class="section-title reveal">Everything You Need To Create</h2>
                 <div class="features-grid">
-                    <div class="feature-card">
+                    <div class="feature-card reveal">
                         <div class="icon"><i class="fas fa-image"></i></div>
                         <h3>AI Art Prompts</h3>
                         <p>Explore thousands of high-quality prompts. Find inspiration for any style - from photorealistic to anime and digital art.</p>
                     </div>
-                    <div class="feature-card">
+                    <div class="feature-card reveal">
                         <div class="icon"><i class="fas fa-wand-magic-sparkles"></i></div>
                         <h3>AI Prompt Wizard</h3>
                         <p>Don't know what to create? Our step-by-step wizard helps you build the perfect, detailed prompt in seconds.</p>
                     </div>
-                    <div class="feature-card">
+                    <div class="feature-card reveal">
                         <div class="icon"><i class="fas fa-meteor"></i></div>
                         <h3>IdeaVerse</h3>
                         <p>Stuck in a creative block? Enter the IdeaVerse to generate unique ideas for stories, characters, art, and more.</p>
@@ -242,15 +358,37 @@
             </div>
         </section>
 
-        <!-- Showcase Section (Screenshots are now updated) -->
-        <section class="showcase">
+        <!-- How It Works Section -->
+        <section class="how-it-works">
             <div class="container">
-                <h2 class="section-title">See It In Action</h2>
+                <h2 class="section-title reveal">Simple Steps to Brilliance</h2>
+                <div class="steps-grid">
+                    <div class="step-card reveal">
+                        <h3>1. Get Inspired</h3>
+                        <p>Browse our vast library of prompts or enter the IdeaVerse to spark your next masterpiece.</p>
+                    </div>
+                    <div class="step-card reveal">
+                        <h3>2. Craft Your Prompt</h3>
+                        <p>Use our intelligent Prompt Wizard to add details like style, lighting, and camera angles effortlessly.</p>
+                    </div>
+                    <div class="step-card reveal">
+                        <h3>3. Generate & Share</h3>
+                        <p>Copy your perfect prompt and use it in any AI art generator. Unleash your creativity!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Showcase Section (Screenshots are now updated) -->
+        <section id="showcase">
+            <div class="container">
+                <h2 class="section-title reveal">See It In Action</h2>
                 <div class="showcase-grid">
-                    <img src="https://iili.io/F14txgj.jpg" alt="PDX Prompt App Screenshot 1">
-                    <img src="https://iili.io/F0Wjn9f.jpg" alt="PDX Prompt App Screenshot 2">
-                    <img src="https://iili.io/F5abeix.jpg" alt="PDX Prompt App Screenshot 3">
-                    <img src="https://iili.io/F167AKP.jpg" alt="PDX Prompt App Screenshot 4">
+                    <img src="https://lh3.googleusercontent.com/d/1IQwNTb7l0tdsND5dHT3kcD3yCSPYlS8p" alt="PDX Prompt App Screenshot 1" class="reveal">
+                    <img src="https://lh3.googleusercontent.com/d/1fJvCQ7Wc1mcD0EHVmTj0qg9szg7xuIrF" alt="PDX Prompt App Screenshot 2" class="reveal">
+                    <img src="https://lh3.googleusercontent.com/d/1zZS5pIU-0soHKHH3RZRBAjhsi22BwDel" alt="PDX Prompt App Screenshot 3" class="reveal">
+                    <img src="https://lh3.googleusercontent.com/d/1Zo3S1bs88UHQRwVhkXs01S0efEB0p9_f" alt="PDX Prompt App Screenshot 4" class="reveal">
                 </div>
             </div>
         </section>
@@ -264,6 +402,23 @@
             <p>© 2025 PDX Digital. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- JavaScript for Reveal on Scroll -->
+    <script>
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 150;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal();
+    </script>
 
 </body>
 </html>
